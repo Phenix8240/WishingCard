@@ -548,17 +548,7 @@ export default function BirthdayWishingCard() {
               Wishing you the most amazing, joyful, and unforgettable birthday! The best is yet to come 🌟
             </p>
 
-            {/* Party buttons */}
-            <div style={{ display:"flex", gap:"14px", flexWrap:"wrap", justifyContent:"center" }}>
-              <button className="intro-btn" style={{ padding:"14px 32px", fontSize:"17px" }}
-                onClick={() => { spawnFirework(); sounds.playPopSound(); }}>
-                🎆 Fireworks!
-              </button>
-              <button className="intro-btn" style={{ padding:"14px 32px", fontSize:"17px", background:"linear-gradient(135deg,#A29BFE,#FD79A8,#FF6BFF)" }}
-                onClick={() => { sounds.playBirthdayMelody(); }}>
-                🎵 Play Song
-              </button>
-            </div>
+            
 
             {/* Emoji row */}
             <div style={{ display:"flex", gap:"18px", fontSize:"36px", flexWrap:"wrap", justifyContent:"center", animation:"fadeInUp 1s 0.8s ease both" }}>
