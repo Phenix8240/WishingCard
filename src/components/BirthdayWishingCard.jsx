@@ -153,73 +153,107 @@ function StarField() {
 }
 
 function useSounds() {
+  const musicRef = useRef(null);
   const ctx = useRef(null);
+
   const getCtx = () => {
-    if (!ctx.current) ctx.current = new (window.AudioContext || window.webkitAudioContext)();
+    if (!ctx.current) {
+      ctx.current = new (window.AudioContext || window.webkitAudioContext)();
+    }
     return ctx.current;
   };
 
-  const MASTER_VOLUME = 0.12; // 🔥 main control (0.05–0.15 best)
+  /* ================= 🎵 BACKGROUND MUSIC ================= */
+  useEffect(() => {
+    const audio = new Audio("/the_mountain-birthday-490600.mp3");
+    audio.loop = true;
+    audio.volume = 0.25; // base volume
+    musicRef.current = audio;
 
-const playNote = useCallback((freq, dur = 0.15, type = "sine", gain = 0.3) => {
-  try {
-    const ac = getCtx();
-    const osc = ac.createOscillator();
-    const g = ac.createGain();
+    return () => {
+      audio.pause();
+      audio.src = "";
+    };
+  }, []);
 
-    osc.connect(g);
-    g.connect(ac.destination);
+  const playMusic = () => {
+    const audio = musicRef.current;
+    if (!audio) return;
 
-    osc.type = type;
-    osc.frequency.setValueAtTime(freq, ac.currentTime);
+    audio.volume = 0;
+    audio.play().catch(() => {});
 
-    // ✅ smoother + softer sound
-    g.gain.setValueAtTime(0.001, ac.currentTime);
-    g.gain.exponentialRampToValueAtTime(gain * MASTER_VOLUME, ac.currentTime + 0.02);
-    g.gain.exponentialRampToValueAtTime(0.001, ac.currentTime + dur);
+    // 🔥 smooth fade-in
+    let v = 0;
+    const fade = setInterval(() => {
+      if (v >= 0.25) {
+        clearInterval(fade);
+        return;
+      }
+      v += 0.02;
+      audio.volume = v;
+    }, 100);
+  };
 
-    osc.start();
-    osc.stop(ac.currentTime + dur);
-  } catch(e) {}
-}, []);
+  const stopMusic = () => {
+    musicRef.current?.pause();
+  };
 
-  const playBirthdayMelody = useCallback(() => {
-    const notes = [
-      [261.6, 0.2], [261.6, 0.2], [293.7, 0.4], [261.6, 0.4], [349.2, 0.4], [329.6, 0.8],
-      [261.6, 0.2], [261.6, 0.2], [293.7, 0.4], [261.6, 0.4], [392.0, 0.4], [349.2, 0.8],
-    ];
-    let t = 0;
-    notes.forEach(([freq, dur]) => {
-      setTimeout(() => playNote(freq, dur, "triangle", 0.25), t * 1000);
-      t += dur * 0.9;
-    });
-  }, [playNote]);
-
+  /* ================= 🔊 POP SOUND ================= */
   const playPopSound = useCallback(() => {
     try {
       const ac = getCtx();
-      const buf = ac.createBuffer(1, ac.sampleRate * 0.1, ac.sampleRate);
-      const data = buf.getChannelData(0);
-      for (let i = 0; i < data.length; i++) data[i] = (Math.random() * 2 - 1) * (1 - i / data.length);
-      const src = ac.createBufferSource();
-      src.buffer = buf;
-      const g = ac.createGain();
-      g.gain.setValueAtTime(0.3, ac.currentTime);
-      g.gain.exponentialRampToValueAtTime(0.001, ac.currentTime + 0.1);
-      src.connect(g); g.connect(ac.destination);
-      src.start();
-    } catch(e) {}
+
+      const buffer = ac.createBuffer(1, ac.sampleRate * 0.1, ac.sampleRate);
+      const data = buffer.getChannelData(0);
+
+      for (let i = 0; i < data.length; i++) {
+        data[i] = (Math.random() * 2 - 1) * (1 - i / data.length);
+      }
+
+      const source = ac.createBufferSource();
+      const gain = ac.createGain();
+
+      gain.gain.setValueAtTime(0.08, ac.currentTime); // 🔥 reduced volume
+
+      source.buffer = buffer;
+      source.connect(gain);
+      gain.connect(ac.destination);
+
+      source.start();
+    } catch {}
   }, []);
 
+  /* ================= 🎆 FIREWORK SOUND ================= */
   const playFirework = useCallback(() => {
-    [523.3, 659.3, 784.0].forEach((f, i) => {
-      setTimeout(() => playNote(f, 0.3, "square", 0.15), i * 80);
-    });
-  }, [playNote]);
+    try {
+      const ac = getCtx();
 
-  return { playBirthdayMelody, playPopSound, playFirework };
+      [400, 600, 800].forEach((freq, i) => {
+        const osc = ac.createOscillator();
+        const gain = ac.createGain();
+
+        osc.type = "sine";
+        osc.frequency.value = freq;
+
+        gain.gain.setValueAtTime(0.05, ac.currentTime);
+
+        osc.connect(gain);
+        gain.connect(ac.destination);
+
+        osc.start(ac.currentTime + i * 0.1);
+        osc.stop(ac.currentTime + i * 0.1 + 0.25);
+      });
+    } catch {}
+  }, []);
+
+  return {
+    playMusic,
+    stopMusic,
+    playPopSound,
+    playFirework
+  };
 }
-
 const MESSAGES = [
   "🎉 প্রিয় বোন, তোমার জন্মদিনে আমার অসংখ্য শুভেচ্ছা।",
   "😊 তোমার মুখের হাসি যেন চিরকাল অমলিন থাকে, সেই কামনা করি।",
@@ -245,10 +279,10 @@ export default function BirthdayWishingCard() {
   }));
 
   const launch = () => {
-    sounds.playBirthdayMelody();
-    setPhase("reveal");
-    setTimeout(() => setPhase("party"), 1200);
-  };
+  sounds.playMusic(); // 🎵 start real music
+  setPhase("reveal");
+  setTimeout(() => setPhase("party"), 1200);
+};
 
   const spawnFirework = useCallback(() => {
     const fw = Array.from({ length: 5 }, (_, i) => ({
