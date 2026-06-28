@@ -250,19 +250,22 @@ function useSounds() {
   return {
     playMusic,
     stopMusic,
-    playPopSound,
+    // playPopSound,
     playFirework
   };
 }
 const MESSAGES = [
-  "🎉 প্রিয় বোন, তোমার জন্মদিনে আমার অসংখ্য শুভেচ্ছা।",
-  "😊 তোমার মুখের হাসি যেন চিরকাল অমলিন থাকে, সেই কামনা করি।",
-  "🌸 তোমার ছোটবেলার সেই মিষ্টি দুষ্টুমি, শিশুমনে যে আনন্দ,",
-  "✨ তা যেন তোমার প্রতিটি দিনকে উজ্জ্বল করে তোলে।",
-  "💪 আমি চাই, তুমি বড় হয়ে জীবনের প্রতিটি চ্যালেঞ্জে সফল হও।",
-  "🤝 আমি সবসময় তোমার পাশে থাকব, যে কোনও পরিস্থিতিতেই।",
-  "💖 তোমার সেই মিষ্টি দুষ্টুমির গল্পগুলো আমাদের হৃদয়ে চিরকাল মধুর হয়ে থাকবে।",
-  "🎂 শুভ জন্মদিন!"
+  "🎉 Wishing you a day filled with love, laughter, and endless joy!",
+  "💖 Stay safe, stay blessed, and keep smiling every day.",
+  "🥳 Cheers to another year of amazing adventures, unforgettable memories, and new achievements!",
+  "🌟 May all your dreams come true. Never give up—always believe in yourself and keep moving forward.",
+  "🎂 May this new year of your life bring happiness, success, good health, and countless reasons to smile.",
+  "✨ Thank you for being such an amazing friend. I'm grateful to have you in my life.",
+  "🤝 No matter where life takes us, I'll always be cheering for you. Keep shining!",
+  "🌈 Wishing you endless happiness, peace, and all the success you truly deserve.",
+  "🎁 May every moment of your life be filled with love, laughter, and beautiful surprises.",
+  "❤️ Happy Birthday, my dear friend! Have a fantastic year ahead and make every moment count!"
+
 ];
 
 export default function BirthdayWishingCard() {
@@ -293,7 +296,7 @@ export default function BirthdayWishingCard() {
     }));
     setFireworks(fw);
     setFwKey(k => k + 1);
-    sounds.playFirework();
+    // sounds.playFirework();
     setTimeout(() => setFireworks([]), 900);
   }, [sounds]);
 
@@ -503,22 +506,26 @@ export default function BirthdayWishingCard() {
             </div>
 
             {/* Main name */}
-            <h1 style={{
-              fontFamily: "'Pacifico', cursive",
-              fontSize: "clamp(52px, 18vw, 110px)",
-              margin: 0,
-              background: "linear-gradient(135deg, #FFD93D 0%, #FF6B6B 30%, #FF6BFF 60%, #4D96FF 100%)",
-              WebkitBackgroundClip: "text",
-              WebkitTextFillColor: "transparent",
-              backgroundClip: "text",
-              lineHeight: 1,
-              animation: "glowPulse 2.5s ease infinite, floatGently 3s ease infinite",
-              filter: "drop-shadow(0 4px 24px rgba(255,107,107,0.6))",
-              textAlign: "center",
-            }}>
-              Munai
-            </h1>
-
+            <h1
+  style={{
+    fontFamily: "'Pacifico', cursive",
+    fontSize: "clamp(60px, 16vw, 120px)",
+    margin: 0,
+    color: "#2ADBE8",
+    lineHeight: 1.1,
+    textAlign: "center",
+    letterSpacing: "3px",
+    animation: "floatGently 3s ease-in-out infinite",
+    textShadow: `
+      0 0 8px rgba(255,224,102,0.8),
+      0 0 20px rgba(255,193,7,0.7),
+      0 0 40px rgba(255,107,107,0.4),
+      4px 4px 12px rgba(0,0,0,0.45)
+    `,
+  }}
+>
+  Joyee
+</h1>
             {/* Age */}
             <div style={{
               display: "flex",
@@ -534,7 +541,7 @@ export default function BirthdayWishingCard() {
                 animation: "numberPop 0.8s cubic-bezier(0.34,1.56,0.64,1) both, pulse 2s ease infinite",
                 lineHeight: 1,
               }}>
-                20
+                22
               </div>
               <span style={{ fontSize: "40px" }}>🎂</span>
             </div>
@@ -579,7 +586,7 @@ export default function BirthdayWishingCard() {
               maxWidth: "380px",
               animation: "fadeInUp 1s 0.5s ease both",
             }}>
-              Wishing you the most amazing, joyful, and unforgettable birthday! The best is yet to come 🌟
+              {/* Wishing you the most amazing, joyful, and unforgettable birthday! The best is yet to come 🌟 */}
             </p>
 
             
